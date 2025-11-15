@@ -13,7 +13,7 @@ public class OpenApiConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("Todo app")
-                        .description("Simple todo app"));
+                        .title("Search As You Type")
+                        .description("Search app with elastic search"));
     }
 }
