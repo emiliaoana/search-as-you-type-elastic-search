@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 @RequiredArgsConstructor
@@ -32,11 +33,13 @@ public class BookService {
                 book.setSuggest(new Completion(new String[]{book.getTitle(), book.getAuthor(), book.getCategory()}));
             }
         });
-        return (List<Book>) bookRepository.saveAll(books);
+        return StreamSupport.stream(bookRepository.saveAll(books).spliterator(), false)
+            .collect(Collectors.toList());
     }
 
     public List<Book> getAllBooks() {
-        return (List<Book>) bookRepository.findAll();
+        return StreamSupport.stream(bookRepository.findAll().spliterator(), false)
+            .collect(Collectors.toList());
     }
 
     public Book getBookById(String id) {
