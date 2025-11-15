@@ -19,10 +19,18 @@ function App() {
     try {
       setLoading(true)
       const response = await fetch(API_BASE_URL)
+      
+      if (!response.ok) {
+        console.error('Fetch failed:', response.status)
+        setBooks([])
+        return
+      }
+      
       const data = await response.json()
-      setBooks(data)
+      setBooks(Array.isArray(data) ? data : [])
     } catch (error) {
       console.error('Error fetching books:', error)
+      setBooks([])
     } finally {
       setLoading(false)
     }
@@ -53,10 +61,18 @@ function App() {
     try {
       setLoading(true)
       const response = await fetch(`${API_BASE_URL}/search/title?query=${encodeURIComponent(query)}`)
+      
+      if (!response.ok) {
+        console.error('Search failed:', response.status)
+        setBooks([])
+        return
+      }
+      
       const data = await response.json()
-      setBooks(data)
+      setBooks(Array.isArray(data) ? data : [])
     } catch (error) {
       console.error('Error searching books:', error)
+      setBooks([])
     } finally {
       setLoading(false)
     }

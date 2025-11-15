@@ -47,7 +47,32 @@ public class BookService {
     }
 
     public List<Book> searchByTitle(String title) {
-        return bookRepository.findByTitleContainingIgnoreCase(title);
+        try {
+            co.elastic.clients.elasticsearch._types.query_dsl.Query query = 
+                co.elastic.clients.elasticsearch._types.query_dsl.Query.of(q -> q
+                    .multiMatch(m -> m
+                        .query(title)
+                        .fields("title", "author", "category", "description")
+                        .fuzziness("AUTO")
+                    )
+                );
+
+            org.springframework.data.elasticsearch.client.elc.NativeQuery searchQuery = 
+                org.springframework.data.elasticsearch.client.elc.NativeQuery.builder()
+                    .withQuery(query)
+                    .build();
+
+            org.springframework.data.elasticsearch.core.SearchHits<Book> searchHits = 
+                elasticsearchOperations.search(searchQuery, Book.class);
+
+            return searchHits.stream()
+                .map(org.springframework.data.elasticsearch.core.SearchHit::getContent)
+                .collect(Collectors.toList());
+        } catch (Exception e) {
+            System.err.println("Error searching by title: " + e.getMessage());
+            e.printStackTrace();
+            return List.of();
+        }
     }
 
     public List<Book> searchByAuthor(String author) {
