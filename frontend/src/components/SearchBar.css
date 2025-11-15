@@ -1,0 +1,92 @@
+.search-bar-wrapper {
+  position: relative;
+  max-width: 700px;
+  margin: 0 auto 3rem;
+}
+
+.search-bar {
+  display: flex;
+  background: white;
+  border-radius: 50px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.search-bar:focus-within {
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
+}
+
+.search-input {
+  flex: 1;
+  padding: 1.2rem 2rem;
+  border: none;
+  font-size: 1.1rem;
+  outline: none;
+  background: transparent;
+}
+
+.search-button {
+  padding: 1.2rem 2rem;
+  border: none;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.search-button:hover {
+  transform: scale(1.05);
+}
+
+.suggestions-list {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 0;
+  right: 0;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  list-style: none;
+  max-height: 400px;
+  overflow-y: auto;
+  z-index: 1000;
+  animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.suggestion-item {
+  padding: 1rem 2rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.suggestion-item:last-child {
+  border-bottom: none;
+}
+
+.suggestion-item:hover,
+.suggestion-item.selected {
+  background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+  padding-left: 2.5rem;
+}
+
+.suggestion-icon {
+  font-size: 1.2rem;
+}

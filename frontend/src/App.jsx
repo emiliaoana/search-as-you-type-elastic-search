@@ -1,0 +1,97 @@
+import { useState, useEffect, useCallback } from 'react'
+import SearchBar from './components/SearchBar'
+import BookList from './components/BookList'
+import './App.css'
+
+const API_BASE_URL = 'http://localhost:8080/api/books'
+
+function App() {
+  const [books, setBooks] = useState([])
+  const [suggestions, setSuggestions] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+
+  useEffect(() => {
+    fetchAllBooks()
+  }, [])
+
+  const fetchAllBooks = async () => {
+    try {
+      setLoading(true)
+      const response = await fetch(API_BASE_URL)
+      const data = await response.json()
+      setBooks(data)
+    } catch (error) {
+      console.error('Error fetching books:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const fetchSuggestions = useCallback(async (query) => {
+    if (!query || query.length < 2) {
+      setSuggestions([])
+      return
+    }
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/suggest?query=${encodeURIComponent(query)}`)
+      const data = await response.json()
+      setSuggestions(data)
+    } catch (error) {
+      console.error('Error fetching suggestions:', error)
+      setSuggestions([])
+    }
+  }, [])
+
+  const searchBooks = async (query) => {
+    if (!query) {
+      fetchAllBooks()
+      return
+    }
+
+    try {
+      setLoading(true)
+      const response = await fetch(`${API_BASE_URL}/search/title?query=${encodeURIComponent(query)}`)
+      const data = await response.json()
+      setBooks(data)
+    } catch (error) {
+      console.error('Error searching books:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleSearchChange = (query) => {
+    setSearchQuery(query)
+    fetchSuggestions(query)
+  }
+
+  const handleSearch = (query) => {
+    setSearchQuery(query)
+    setSuggestions([])
+    searchBooks(query)
+  }
+
+  return (
+    <div className="app">
+      <div className="container">
+        <header className="header">
+          <h1>📚 Book Search</h1>
+          <p>Search as you type with Elasticsearch</p>
+        </header>
+
+        <SearchBar
+          value={searchQuery}
+          suggestions={suggestions}
+          onChange={handleSearchChange}
+          onSearch={handleSearch}
+        />
+
+        <BookList books={books} loading={loading} />
+      </div>
+    </div>
+  )
+}
+
+export default App
