@@ -8,7 +8,6 @@ import java.util.List;
 
 @Repository
 public interface BookRepository extends ElasticsearchRepository<Book, String> {
-    List<Book> findByTitleContainingIgnoreCase(String title);
     List<Book> findByAuthor(String author);
     List<Book> findByCategory(String category);
 }

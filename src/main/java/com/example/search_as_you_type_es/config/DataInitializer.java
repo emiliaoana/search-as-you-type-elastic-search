@@ -17,10 +17,8 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        // Clear existing data
         bookService.deleteAll();
 
-        // Sample books
         List<Book> books = Arrays.asList(
             new Book("1", "The Great Gatsby", "F. Scott Fitzgerald", "978-0743273565", 
                 "A classic American novel", "Fiction", 10.99),

@@ -15,7 +15,6 @@ import org.springframework.data.elasticsearch.core.suggest.Completion;
 @AllArgsConstructor
 @Document(indexName = "books")
 public class Book {
-
     @Id
     private String id;
 

@@ -21,11 +21,11 @@ public class BookController {
     public ResponseEntity<Book> createBook(@RequestBody Book book) {
         return ResponseEntity.ok(bookService.saveBook(book));
     }
-
-    @PostMapping("/batch")
-    public ResponseEntity<List<Book>> createBooks(@RequestBody List<Book> books) {
-        return ResponseEntity.ok(bookService.saveAll(books));
-    }
+//
+//    @PostMapping("/batch")
+//    public ResponseEntity<List<Book>> createBooks(@RequestBody List<Book> books) {
+//        return ResponseEntity.ok(bookService.saveAll(books));
+//    }
 
     @GetMapping
     public ResponseEntity<List<Book>> getAllBooks() {
