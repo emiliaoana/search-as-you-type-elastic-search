@@ -1,7 +1,7 @@
 import BookCard from './BookCard'
 import './BookList.css'
 
-function BookList({ books, loading }) {
+function BookList({ books, loading, onBookClick }) {
   if (loading) {
     return (
       <div className="loading">
@@ -14,7 +14,7 @@ function BookList({ books, loading }) {
   if (books.length === 0) {
     return (
       <div className="no-results">
-        <p>📚 No books found</p>
+        <p>No books found</p>
       </div>
     )
   }
@@ -22,7 +22,7 @@ function BookList({ books, loading }) {
   return (
     <div className="book-list">
       {books.map(book => (
-        <BookCard key={book.id} book={book} />
+        <BookCard key={book.id} book={book} onClick={() => onBookClick(book)} />
       ))}
     </div>
   )

@@ -1,8 +1,8 @@
 import './BookCard.css'
 
-function BookCard({ book }) {
+function BookCard({ book, onClick }) {
   return (
-    <div className="book-card">
+    <div className="book-card" onClick={onClick}>
       <div className="book-header">
         <h3 className="book-title">{book.title}</h3>
         <span className="book-category">{book.category}</span>

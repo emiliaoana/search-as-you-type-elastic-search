@@ -25,6 +25,12 @@ function SearchBar({ value, suggestions, onChange, onSearch }) {
     onChange(e.target.value)
   }
 
+  const handleClear = () => {
+    onChange('')
+    onSearch('')
+    setShowSuggestions(false)
+  }
+
   const handleKeyDown = (e) => {
     if (e.key === 'ArrowDown') {
       e.preventDefault()
@@ -64,11 +70,21 @@ function SearchBar({ value, suggestions, onChange, onSearch }) {
           onKeyDown={handleKeyDown}
           autoComplete="off"
         />
+        {value && (
+          <button 
+            className="clear-button"
+            onClick={handleClear}
+            aria-label="Clear search"
+          >
+            ×
+          </button>
+        )}
         <button 
           className="search-button"
           onClick={() => onSearch(value)}
+          aria-label="Search"
         >
-          🔍
+          Search
         </button>
       </div>
 
@@ -81,7 +97,6 @@ function SearchBar({ value, suggestions, onChange, onSearch }) {
               onClick={() => handleSuggestionClick(suggestion)}
               onMouseEnter={() => setSelectedIndex(index)}
             >
-              <span className="suggestion-icon">💡</span>
               {suggestion}
             </li>
           ))}
