@@ -48,12 +48,32 @@ public class BookService {
 
     public List<Book> searchByTitle(String title) {
         try {
-            co.elastic.clients.elasticsearch._types.query_dsl.Query query = 
+            co.elastic.clients.elasticsearch._types.query_dsl.Query query =
                 co.elastic.clients.elasticsearch._types.query_dsl.Query.of(q -> q
-                    .multiMatch(m -> m
-                        .query(title)
-                        .fields("title", "author", "category", "description")
-                        .fuzziness("AUTO")
+                    .bool(b -> b
+                        .should(s -> s
+                            .matchPhrase(m -> m
+                                .field("title")
+                                .query(title)
+                                .boost(5.0f)
+                            )
+                        )
+                        .should(s -> s
+                            .match(m -> m
+                                .field("title")
+                                .query(title)
+                                .operator(co.elastic.clients.elasticsearch._types.query_dsl.Operator.And)
+                                .boost(3.0f)
+                            )
+                        )
+                        .should(s -> s
+                            .matchPhrase(m -> m
+                                .field("author")
+                                .query(title)
+                                .boost(2.0f)
+                            )
+                        )
+                        .minimumShouldMatch("1")
                     )
                 );
 
