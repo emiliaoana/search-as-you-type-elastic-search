@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import SearchBar from './components/SearchBar'
 import BookList from './components/BookList'
 import BookDetail from './components/BookDetail'
+import AddBook from './components/AddBook'
 import './App.css'
 
 const API_BASE_URL = 'http://localhost:8080/api/books'
@@ -12,6 +13,7 @@ function App() {
   const [loading, setLoading] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedBook, setSelectedBook] = useState(null)
+  const [showAddBook, setShowAddBook] = useState(false)
 
   useEffect(() => {
     fetchAllBooks()
@@ -97,6 +99,19 @@ function App() {
 
   const handleBackToList = () => {
     setSelectedBook(null)
+    setShowAddBook(false)
+  }
+
+  const handleShowAddBook = () => {
+    setShowAddBook(true)
+  }
+
+  const handleBookAdded = () => {
+    fetchAllBooks()
+  }
+
+  if (showAddBook) {
+    return <AddBook onBack={handleBackToList} onBookAdded={handleBookAdded} />
   }
 
   if (selectedBook) {
@@ -110,6 +125,12 @@ function App() {
           <h1>Book Search</h1>
           <p>Search as you type with Elasticsearch</p>
         </header>
+
+        <div className="actions-bar">
+          <button className="add-book-button" onClick={handleShowAddBook}>
+            + Add Book
+          </button>
+        </div>
 
         <SearchBar
           value={searchQuery}
