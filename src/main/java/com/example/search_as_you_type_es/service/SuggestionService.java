@@ -42,7 +42,7 @@ public class SuggestionService {
             return new ArrayList<>();
         }
 
-        CompletionSuggestion completionSuggestion = (CompletionSuggestion) suggest.getSuggestion("book-suggest");
+        CompletionSuggestion<String> completionSuggestion = (CompletionSuggestion<String>) suggest.getSuggestion("book-suggest");
 
         return completionSuggestion.getEntries().stream()
             .flatMap(entry -> ((CompletionSuggestion.Entry) entry).getOptions().stream())
