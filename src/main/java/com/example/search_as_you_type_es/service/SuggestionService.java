@@ -20,7 +20,7 @@ public class SuggestionService {
 
     private final ElasticsearchOperations elasticsearchOperations;
 
-    public List getSuggestions(String query) {
+    public List<String> getSuggestions(String query) {
         NativeQuery searchQuery = NativeQuery.builder()
             .withQuery(Query.of(q -> q.matchAll(m -> m)))
             .withSuggester(Suggester.of(s -> s
