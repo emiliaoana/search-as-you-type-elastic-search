@@ -63,7 +63,7 @@ public class BookService {
                         )
                         .should(s -> s
                             .match(m -> m
-                                .field("title")
+                                .field("category")
                                 .query(title)
                                 .operator(Operator.And)
                                 .boost(3.0f)
@@ -81,7 +81,7 @@ public class BookService {
                 );
 
            NativeQuery searchQuery =
-                org.springframework.data.elasticsearch.client.elc.NativeQuery.builder()
+               NativeQuery.builder()
                     .withQuery(query)
                     .build();
 
