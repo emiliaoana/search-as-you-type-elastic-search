@@ -24,18 +24,10 @@ public class BookService {
     private final ElasticsearchOperations elasticsearchOperations;
 
     public Book saveBook(Book book) {
-        if (book.getSuggest() == null) {
-            book.setSuggest(new Completion(new String[]{book.getTitle(), book.getAuthor(), book.getCategory()}));
-        }
         return bookRepository.save(book);
     }
 
     public List<Book> saveAll(List<Book> books) {
-        books.forEach(book -> {
-            if (book.getSuggest() == null) {
-                book.setSuggest(new Completion(new String[]{book.getTitle(), book.getAuthor(), book.getCategory()}));
-            }
-        });
         return StreamSupport.stream(bookRepository.saveAll(books).spliterator(), false)
                 .toList();
     }

@@ -54,7 +54,7 @@ function SearchBar({ value, suggestions, onChange, onSearch }) {
   }
 
   const handleSuggestionClick = (suggestion) => {
-    onSearch(suggestion)
+    onSearch(suggestion.title)
     setShowSuggestions(false)
   }
 
@@ -92,12 +92,13 @@ function SearchBar({ value, suggestions, onChange, onSearch }) {
         <ul className="suggestions-list">
           {suggestions.map((suggestion, index) => (
             <li
-              key={index}
+              key={suggestion.id || index}
               className={`suggestion-item ${index === selectedIndex ? 'selected' : ''}`}
               onClick={() => handleSuggestionClick(suggestion)}
               onMouseEnter={() => setSelectedIndex(index)}
             >
-              {suggestion}
+              {suggestion.title}
+              {suggestion.author && <span className="suggestion-detail"> by {suggestion.author}</span>}
             </li>
           ))}
         </ul>

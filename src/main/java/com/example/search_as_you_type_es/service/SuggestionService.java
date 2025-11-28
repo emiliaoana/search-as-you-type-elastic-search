@@ -1,58 +1,40 @@
 package com.example.search_as_you_type_es.service;
 
+import co.elastic.clients.elasticsearch._types.query_dsl.TextQueryType;
 import co.elastic.clients.elasticsearch.core.search.Suggester;
 import com.example.search_as_you_type_es.model.Book;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
-import org.springframework.data.elasticsearch.core.suggest.response.CompletionSuggestion;
-import org.springframework.data.elasticsearch.core.suggest.response.Suggest;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class SuggestionService {
     private final ElasticsearchOperations elasticsearchOperations;
-    public List<String> getSuggestions(String input) {
-        String suggesterName = "book-suggest";
+        public List<Book> searchAsYouType (String input){
+            if (input == null || input.trim().isEmpty()) {
+                return List.of();
+            }
 
-        NativeQuery searchQuery = NativeQuery.builder()
-                .withSuggester(Suggester.of(s -> s
-                        .suggesters(suggesterName, fs -> fs
-                                .prefix(input)
-                                .completion(c -> c
-                                        .field("suggest")
-                                        .size(10)
-                                        .skipDuplicates(true)
-                                        .fuzzy(f -> f
-                                                .fuzziness("AUTO")
-                                                .minLength(3)
-                                        )
-                                )
-                        )
-                ))
-                .build();
+            NativeQuery query = NativeQuery.builder()
+                    .withQuery(q -> q
+                            .multiMatch(m -> m
+                                    .query(input)
+                                    .fields("title", "author", "category")
+                                    .type(TextQueryType.BoolPrefix)
+                            )
+                    )
+                    .build();
 
-        SearchHits<Book> searchHits = elasticsearchOperations.search(searchQuery, Book.class);
-        Suggest suggestResult = searchHits.getSuggest();
+            SearchHits<Book> searchHits = elasticsearchOperations.search(query, Book.class);
 
-        if (suggestResult == null) {
-            return new ArrayList<>();
-        } else {
-            suggestResult.getSuggestion(suggesterName);
+            return searchHits.stream()
+                    .map(SearchHit::getContent)
+                    .toList();
         }
-
-        CompletionSuggestion<?> suggestion = (CompletionSuggestion<?>) suggestResult.getSuggestion(suggesterName);
-
-        return suggestion.getEntries().stream()
-                .flatMap(entry -> entry.getOptions().stream())
-                .map(Suggest.Suggestion.Entry.Option::getText)
-                .distinct()
-                .toList();
     }
-
-}

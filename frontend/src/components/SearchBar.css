@@ -99,3 +99,9 @@
   background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
   padding-left: 2.5rem;
 }
+
+.suggestion-detail {
+  font-size: 0.9em;
+  color: #888;
+  font-style: italic;
+}

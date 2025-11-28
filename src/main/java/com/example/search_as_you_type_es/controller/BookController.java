@@ -49,8 +49,8 @@ public class BookController {
     }
 
     @GetMapping("/suggest")
-    public ResponseEntity<List<String>> getSuggestions(@RequestParam String query) {
-        return ResponseEntity.ok(suggestionService.getSuggestions(query));
+    public ResponseEntity<List<Book>> getSuggestions(@RequestParam String query) {
+        return ResponseEntity.ok(suggestionService.searchAsYouType(query));
     }
 
     @DeleteMapping("/{id}")

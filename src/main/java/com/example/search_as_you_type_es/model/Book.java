@@ -4,11 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.elasticsearch.annotations.CompletionField;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
-import org.springframework.data.elasticsearch.core.suggest.Completion;
 
 @Data
 @NoArgsConstructor
@@ -30,23 +28,9 @@ public class Book {
     @Field(type = FieldType.Text)
     private String description;
 
-    @Field(type = FieldType.Keyword)
+    @Field(type = FieldType.Text)
     private String category;
 
     @Field(type = FieldType.Double)
     private Double price;
-
-    @CompletionField(maxInputLength = 100)
-    private Completion suggest;
-
-    public Book(String id, String title, String author, String isbn, String description, String category, Double price) {
-        this.id = id;
-        this.title = title;
-        this.author = author;
-        this.isbn = isbn;
-        this.description = description;
-        this.category = category;
-        this.price = price;
-        this.suggest = new Completion(new String[]{title, author, category});
-    }
 }
