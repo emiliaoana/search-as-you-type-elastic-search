@@ -26,6 +26,7 @@ public class SuggestionService {
                             .multiMatch(m -> m
                                     .query(input)
                                     .fields("title", "author", "category")
+                                    .fuzziness("AUTO")
                                     .type(TextQueryType.BoolPrefix)
                             )
                     )
