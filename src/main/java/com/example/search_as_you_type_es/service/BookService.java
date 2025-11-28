@@ -42,52 +42,7 @@ public class BookService {
     }
 
     public List<Book> searchByTitle(String title) {
-        try {
-            Query query =
-                Query.of(q -> q
-                    .bool(b -> b
-                        .should(s -> s
-                            .matchPhrase(m -> m
-                                .field("title")
-                                .query(title)
-                                .boost(5.0f)
-                            )
-                        )
-                        .should(s -> s
-                            .match(m -> m
-                                .field("category")
-                                .query(title)
-                                .operator(Operator.And)
-                                .boost(3.0f)
-                            )
-                        )
-                        .should(s -> s
-                            .matchPhrase(m -> m
-                                .field("author")
-                                .query(title)
-                                .boost(2.0f)
-                            )
-                        )
-                        .minimumShouldMatch("1")
-                    )
-                );
-
-           NativeQuery searchQuery =
-               NativeQuery.builder()
-                    .withQuery(query)
-                    .build();
-
-            SearchHits<Book> searchHits =
-                elasticsearchOperations.search(searchQuery, Book.class);
-
-            return searchHits.stream()
-                .map(SearchHit::getContent)
-                    .toList();
-        } catch (Exception e) {
-            log.error("Error searching by title: {}", e.getMessage());
-            e.printStackTrace();
-            return List.of();
-        }
+        return bookRepository.findByTitle(title);
     }
 
     public List<Book> searchByAuthor(String author) {
