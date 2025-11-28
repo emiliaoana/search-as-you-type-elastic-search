@@ -1,6 +1,5 @@
 package com.example.search_as_you_type_es.service;
 
-import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import co.elastic.clients.elasticsearch.core.search.Suggester;
 import com.example.search_as_you_type_es.model.Book;
 import lombok.RequiredArgsConstructor;
@@ -17,37 +16,43 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class SuggestionService {
-
     private final ElasticsearchOperations elasticsearchOperations;
+    public List<String> getSuggestions(String input) {
+        String suggesterName = "book-suggest";
 
-    public List<String> getSuggestions(String query) {
         NativeQuery searchQuery = NativeQuery.builder()
-            .withQuery(Query.of(q -> q.matchAll(m -> m)))
-            .withSuggester(Suggester.of(s -> s
-                .suggesters("book-suggest", fs -> fs
-                    .prefix(query)
-                    .completion(c -> c
-                        .field("suggest")
-                        .size(10)
-                        .skipDuplicates(true)
-                    )
-                )
-            ))
-            .build();
+                .withSuggester(Suggester.of(s -> s
+                        .suggesters(suggesterName, fs -> fs
+                                .prefix(input)
+                                .completion(c -> c
+                                        .field("suggest")
+                                        .size(10)
+                                        .skipDuplicates(true)
+                                        .fuzzy(f -> f
+                                                .fuzziness("AUTO")
+                                                .minLength(3)
+                                        )
+                                )
+                        )
+                ))
+                .build();
 
         SearchHits<Book> searchHits = elasticsearchOperations.search(searchQuery, Book.class);
-        Suggest suggest = searchHits.getSuggest();
-        
-        if (suggest == null) {
+        Suggest suggestResult = searchHits.getSuggest();
+
+        if (suggestResult == null) {
             return new ArrayList<>();
+        } else {
+            suggestResult.getSuggestion(suggesterName);
         }
 
-        CompletionSuggestion<String> completionSuggestion = (CompletionSuggestion<String>) suggest.getSuggestion("book-suggest");
+        CompletionSuggestion<?> suggestion = (CompletionSuggestion<?>) suggestResult.getSuggestion(suggesterName);
 
-        return completionSuggestion.getEntries().stream()
-            .flatMap(entry -> ((CompletionSuggestion.Entry) entry).getOptions().stream())
-            .map(option -> ((CompletionSuggestion.Entry.Option) option).getText().toString())
-            .distinct()
+        return suggestion.getEntries().stream()
+                .flatMap(entry -> entry.getOptions().stream())
+                .map(Suggest.Suggestion.Entry.Option::getText)
+                .distinct()
                 .toList();
     }
+
 }
