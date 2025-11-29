@@ -1,16 +1,9 @@
 package com.example.search_as_you_type_es.service;
 
-import co.elastic.clients.elasticsearch._types.query_dsl.Operator;
-import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import com.example.search_as_you_type_es.model.Book;
 import com.example.search_as_you_type_es.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.elasticsearch.client.elc.NativeQuery;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.data.elasticsearch.core.SearchHit;
-import org.springframework.data.elasticsearch.core.SearchHits;
-import org.springframework.data.elasticsearch.core.suggest.Completion;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,7 +14,6 @@ import java.util.stream.StreamSupport;
 public class BookService {
 
     private final BookRepository bookRepository;
-    private final ElasticsearchOperations elasticsearchOperations;
 
     public Book saveBook(Book book) {
         return bookRepository.save(book);

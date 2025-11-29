@@ -1,7 +1,6 @@
 package com.example.search_as_you_type_es.service;
 
 import co.elastic.clients.elasticsearch._types.query_dsl.TextQueryType;
-import co.elastic.clients.elasticsearch.core.search.Suggester;
 import com.example.search_as_you_type_es.model.Book;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
@@ -27,7 +26,7 @@ public class SuggestionService {
                                     .query(input)
                                     .fields("title", "author", "category")
                                     .fuzziness("AUTO")
-                                    .type(TextQueryType.BoolPrefix)
+                                    .type(TextQueryType.MostFields)
                             )
                     )
                     .build();
