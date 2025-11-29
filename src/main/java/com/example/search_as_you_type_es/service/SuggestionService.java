@@ -19,7 +19,6 @@ public class SuggestionService {
             if (input == null || input.trim().isEmpty()) {
                 return List.of();
             }
-
             NativeQuery query = NativeQuery.builder()
                     .withQuery(q -> q
                             .multiMatch(m -> m
@@ -29,7 +28,6 @@ public class SuggestionService {
                             )
                     )
                     .build();
-
             SearchHits<Book> searchHits = elasticsearchOperations.search(query, Book.class);
 
             return searchHits.stream()
