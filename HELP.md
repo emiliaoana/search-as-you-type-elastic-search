@@ -5,3 +5,7 @@ Create a new data view with the index you have and give it a suitable name
 
 To visualize go to Discover and near the plus select the name you previously created.
 
+
+curl -X DELETE "http://localhost:9200/books" - to delete an index
+
+
