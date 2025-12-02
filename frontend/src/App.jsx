@@ -49,6 +49,7 @@ function App() {
     try {
       const response = await fetch(`${API_BASE_URL}/suggest?query=${encodeURIComponent(query)}`)
       const data = await response.json()
+        console.log(data)
       setSuggestions(data)
     } catch (error) {
       console.error('Error fetching suggestions:', error)
@@ -56,33 +57,34 @@ function App() {
     }
   }, [])
 
-  const searchBooks = async (query) => {
-    if (!query) {
-      fetchAllBooks()
-      return
+    const searchBooks = async (id) => {
+        if (!id) {
+            fetchAllBooks()
+            return
+        }
+
+        try {
+            setLoading(true)
+            const response = await fetch(`${API_BASE_URL}/${encodeURIComponent(id)}`)
+
+            if (!response.ok) {
+                console.error('Search failed:', response.status)
+                setBooks([])
+                return
+            }
+
+            const data = await response.json()
+            setBooks(Array.isArray(data) ? data : [data])   // handle single object
+        } catch (error) {
+            console.error('Error searching books:', error)
+            setBooks([])
+        } finally {
+            setLoading(false)
+        }
     }
 
-    try {
-      setLoading(true)
-      const response = await fetch(`${API_BASE_URL}/search/title?query=${encodeURIComponent(query)}`)
-      
-      if (!response.ok) {
-        console.error('Search failed:', response.status)
-        setBooks([])
-        return
-      }
-      
-      const data = await response.json()
-      setBooks(Array.isArray(data) ? data : [])
-    } catch (error) {
-      console.error('Error searching books:', error)
-      setBooks([])
-    } finally {
-      setLoading(false)
-    }
-  }
 
-  const handleSearchChange = (query) => {
+    const handleSearchChange = (query) => {
     setSearchQuery(query)
     fetchSuggestions(query)
   }

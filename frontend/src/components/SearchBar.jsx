@@ -54,7 +54,7 @@ function SearchBar({ value, suggestions, onChange, onSearch }) {
   }
 
   const handleSuggestionClick = (suggestion) => {
-    onSearch(suggestion.title)
+    onSearch(suggestion.id)
     setShowSuggestions(false)
   }
 
